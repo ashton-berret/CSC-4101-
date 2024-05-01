@@ -22,17 +22,15 @@ TokenType = {
 
 # Token class to initialize token type and value
 class Token:
-    def __init__(self, type, value, line_number): 
+    def __init__(self, type, value): 
         self.type = type
         self.value = value
-        self.line_number = line_number
 
 # function that turns an input string into a token that matches the structure of the program/type of valid program inputs
 def tokenize(input):
     tokens = [] 
     #re module is used to compile a regular expression into an object so you can match that object against input strings
     pattern = re.compile(f'{KEYWORDS}|{IDENTIFIERS}|{NUMBERS}|{OPERATORS}|{LOGIC_OPERATORS}|{DELIMITERS}|{WHITESPACE}')
-    line_number = 1
     for match in re.finditer(pattern, input): #iterates over tokens matched and checks if the type matches one of the defined token categories
         token_type = None
         if re.match(KEYWORDS, match.group()):
@@ -50,10 +48,7 @@ def tokenize(input):
         else:
             continue  # Ignore whitespace
         #print(f'Token: {match.group()}, Type: {list(TokenType.keys())[list(TokenType.values()).index(token_type)]}')
-        tokens.append(Token(token_type, match.group(), line_number)) #for all the matches, append that to the list of tokens
-
-        if match.group() == '\n':
-            line_number += 1
+        tokens.append(Token(token_type, match.group())) #for all the matches, append that to the list of tokens
 
     return tokens
 

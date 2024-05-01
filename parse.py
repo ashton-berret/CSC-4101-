@@ -72,7 +72,7 @@ class Parser:
             self.match(TokenType['OPERATOR'], None)
         else:
             print(f'Encountered unknown token: {token.value} ({token.type})')
-            raise RuntimeError (f'Syntax error at line number {self.get_line_number(token)}: Factor Not Recognized')
+            raise RuntimeError (f'Syntax error {self(token)}: Factor Not Recognized')
 
     #starts and stops parsing based on matching the keywords
     def run_parser(self):
@@ -155,12 +155,9 @@ class Parser:
 
     def error(self, message):
         curr_token = self.get_curr_token()
-        line_number = self.get_line_number(curr_token)
-
-        raise RuntimeError(f'Syntax error: at line nunber {line_number}: {message}')
+        raise RuntimeError(f'Syntax error:  {message}')
     
-    def get_line_number(self, token):
-        return token.line_number
+    
     
     
 
