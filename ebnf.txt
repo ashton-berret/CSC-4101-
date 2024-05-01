@@ -1,0 +1,75 @@
+<program> ---> 'program' <statements> 'end_program'
+    - Program starts with 'program' keyword, follwed by statements, and ends with 'end_program' keyword
+
+<statements> ---> <statement> <statements> | ε
+    - Statement can be 1 or more statements or no statements at all such that 'program end_program' is valid
+
+<statement> ---> <assignment> ';' | <loop> | <conditional>
+    - Statement can either be an assignment that ends with ';', a loop or a conditional 
+
+<assignment> ---> <identifier> '=' <expression>
+    - Assigns value of an expression to an identifier via '='
+
+<expression> ---> <term> <expression_tail>
+    - Expression can either be a single term (so a single factor or sequence of factors) or a term followed by multiple '+ -' operations 
+      with their own associated terms. 
+<expression_tail> ---> '+' <term> <expression_tail> | '-' <term> <expression_tail> | ε
+    - The expression_tail is used to see if there are more operations after the first term so it can handle something like 'a + b - c + d'
+
+<term> ---> <factor> <term_tail>
+    - Same idea for expression just at a lower/more constrained level
+<term_tail> ---> '*' <factor> <term_tail> | '/' <factor> <term_tail> | '%' <factor> <term_tail> | ε
+
+<factor> ---> <identifier> | <number> | '(' <expression> ')'
+    - factor can only be a identifier/number or expression within parenthsis
+
+<loop> ---> 'loop' '(' <identifier> '=' <identifier> ':' <identifier> ')' <statements> 'end_loop'
+    - Structure of a loop that is started with loop keyword and ended by end_loop. The parenthesis are there to group all the identifiers 
+      needed for the loop so that the program knows where the loop identifiers end and where the statements begin before ending the loop
+
+
+<conditional> --->'if' '(' <logic_expression> ')' <statements> 'end_if'
+    - Structure for an if statement that is started with the if keyword and ended with the end_if keyword. the parenthesis group the logic 
+      expression which evaluates to a boolean
+
+<logic_expression> ---> <identifier> <logic_operator> <identifier>
+    - Structure of a logical expression from a conditional statement where the first/left identifier is compared against the second/right
+
+<logic_operator> ---> '==' | '!=' | '>=' | '<=' | '>' | '<'
+    - Set of valid logical operators to be used in the logic expressions
+
+<identifier> ---> [a-zA-Z][a-zA-Z0-9]*
+    - States that a valid identifier has to start with a case-insensitive letter and then, because of the '*', can be followed by any amount
+      of case-insensitive letters or numbers
+
+<number> ---> [0-9]+
+    - States that a number must include at least one digit from 0-9 but can include many more digits because of the '+'
+
+
+
+
+
+    EBNF Derivation Example for program if (x == 10) y = (2 * x); end_if end_program
+
+    <program>   --> 'program' <statements> 'end_program'
+                --> 'program' <statement> <statements> 'end_program'
+                --> 'program' <conditional> <statements> 'end_program'
+                --> 'program' 'if' '(' <logic_expression> ')' <statements> 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' <identifier> <logic_operator> <identifier> ')' <statements> 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' <identifier> '==' <number> ')' <statements> 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' x '==' 'number' ')' <statements> 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' x '==' [0-9]+ ')' <statements> 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' x '==' 10 ')' <statements> 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' x '==' 10 ')' <assignment> ';' 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' x '==' 10 ')' y '=' <expression> ';' 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' x '==' 10 ')' y '=' <term> <expression_tail> ';' 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' x '==' 10 ')' y '=' <factor> <term_tail> <expression_tail> ';' 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' x '==' 10 ')' y '=' '(' <expression> ')' <term_tail> <expression_tail> ';' 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' x '==' 10 ')' y '=' '(' <term> <expression_tail> ')' <term_tail> <expression_tail> ';' 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' x '==' 10 ')' y '=' '(' <factor> <term_tail> <expression_tail> ')' <term_tail> <expression_tail> ';' 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' x '==' 10 ')' y '=' '(' <identifier> <term_tail> <expression_tail> ')' <term_tail> <expression_tail> ';' 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' x '==' 10 ')' y '=' '(' x <term_tail> <expression_tail> ')' <term_tail> <expression_tail> ';' 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' x '==' 10 ')' y '=' '(' x '*' <factor> <term_tail> <expression_tail> ')' <expression_tail> ';' 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' x '==' 10 ')' y '=' '(' x '*' <number> ')' ';' 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' x '==' 10 ')' y '=' '(' x '*' 2 ')' ';' 'end_if' <statements> 'end_program'
+                --> 'program' 'if' '(' x '==' 10 ')' y '=' '(' x '*' 2 ')' ';' 'end_if' 'end_program'

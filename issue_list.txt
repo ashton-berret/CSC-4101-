@@ -1,0 +1,10 @@
+1) program recognizing keywords as identifiers in lexer.py file 
+    --> fixed by reordering .match in tokenizer function
+2) multi-word keywords being split and not recognized as key words but first an identifier, then a keywords 
+    --> fixed by adding /b on the keyword category so that it would match word_boundary/length
+3) expecting a delimiter but found an operator when should be expecting an operator 
+    --> just mismatched the key value pairs in the assignment and loop methods
+4) unexpected end of program 
+    --> had to change the has_more_tokens method to check against token type ['KEYWORD'] and not against token val 'end_program'
+5) Invalid factor error when trying to parse comparison/logic operators
+    --> Had to reorder the logic operators in the lexer file such that the >= was before the >, since it would hit the > and then treat the following = as an operator, not a continuous logic operator
